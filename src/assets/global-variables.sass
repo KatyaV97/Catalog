@@ -1,0 +1,56 @@
+/* Default text Mixins */
+
+@mixin regular-text
+  font-weight: 400
+  font-family: $Roboto, sans-serif
+
+@mixin medium-text
+  font-weight: 500
+  font-family: $Roboto-Medium, sans-serif
+
+@mixin bold-text
+  font-weight: 700
+  font-family: $Roboto-Bold, sans-serif
+
+@mixin black-text
+  font-weight: 900
+  font-family: $Roboto-Black, sans-serif
+
+@mixin default-body-text
+  font-size: 18px
+  @include medium-text
+
+@mixin input-regular-text
+  font-size: 24px
+  @include regular-text
+
+@mixin default-regular-text
+  font-size: 18px
+  @include regular-text
+
+@mixin default-header-text
+  font-size: 18px
+  @include black-text
+
+@mixin small-header-text
+  font-size: 12px
+  @include black-text
+
+@mixin default-h1
+  font-size: 48px
+  line-height: 125%
+  @include bold-text
+
+/* Flex Mixins */
+
+@mixin align-items-center
+  display: flex
+  align-items: center
+
+@mixin space-between
+  justify-content: space-between
+  @include align-items-center
+
+@mixin direction-column
+  display: flex
+  flex-direction: column

@@ -1,0 +1,66 @@
+.header
+  @include align-items-center
+  justify-content: space-between
+  height: 101px
+  padding: 0 166px
+
+  .right
+    color: $blue
+    @include default-header-text
+    letter-spacing: 0.9px
+
+  .left
+    @include align-items-center
+    gap: 48px
+    @include small-header-text
+
+    .personal-account
+      @include align-items-center
+      gap: 19px
+      letter-spacing: 0.24px
+
+.line
+  height: 1px
+  background: $grey
+
+.container
+  padding: 0 166px
+
+  .table-header
+    @include direction-column
+    gap: 20px
+    align-content: center
+    padding: 63px 0 74px 0
+    height: 232px
+
+    .devices-block
+      @include space-between
+      align-items: flex-end
+      gap: 63px
+
+      .phone-card
+        display: flex
+        justify-content: space-between
+        width: 100%
+        padding-right: 65px
+
+    .top
+      @include space-between
+
+      .title
+        @include default-h1
+        color: $dark-grey
+        letter-spacing: 0.96px
+
+      .tabs-devices-counter
+        @include default-regular-text
+        color: $blue
+        letter-spacing: 0.36px
+        line-height: 60px
+
+.table-body
+  background: $light-blue
+  padding-bottom: 91px
+
+  .rows
+    padding: 0 165px
