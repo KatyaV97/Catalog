@@ -75,7 +75,7 @@ export default defineComponent({
       })
       this.$store.commit('devices/setDevicesForCompare')
       this.$store.commit('devices/setUnusedDevices')
-      this.$store.commit('devices/setShowDifference', false)
+      this.$store.commit('devices/filteredRowsTitles')
     },
     setSearchValue(text: string): void {
       this.searchValue = text.trim()

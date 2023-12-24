@@ -17,12 +17,20 @@ type Device = {
     imgPath: string,
 }
 
+type RowTitle = {
+    title: string,
+    parameter: string,
+    unit: string | null
+}
+
 export interface State {
     allDevices: Device [],
     devicesForCompare: Device [],
     unusedDevices: Device [],
     countDevicesForCompare: number,
-    showDifference: boolean
+    showDifference: boolean,
+    filteredRowsTitles: RowTitle[],
+    rowsTitles: RowTitle[],
 }
 
 const state = (): State => ({
@@ -30,7 +38,60 @@ const state = (): State => ({
     devicesForCompare: [],
     unusedDevices: [],
     countDevicesForCompare: 3,
-    showDifference: false
+    showDifference: false,
+    filteredRowsTitles: [],
+    rowsTitles: [
+        {
+            title: 'Производитель',
+            parameter: 'brand',
+            unit: null
+        },
+        {
+            title: 'год релиза',
+            parameter: 'releaseYear',
+            unit: null
+        },
+        {
+            title: 'Диагональ экрана (дюйм)',
+            parameter: 'displaySize',
+            unit: null
+        },
+        {
+            title: 'Страна-производитель',
+            parameter: 'manufactureCountry',
+            unit: null
+        },
+        {
+            title: 'Объем памяти',
+            parameter: 'memory',
+            unit: 'Гб'
+        },
+        {
+            title: 'Частота обновления экрана',
+            parameter: 'displayRefreshRate',
+            unit: null
+        },
+        {
+            title: 'NFC',
+            parameter: 'hasNFC',
+            unit: null
+        },
+        {
+            title: 'Поддержка eSIM',
+            parameter: 'hasESIM',
+            unit: null
+        },
+        {
+            title: 'Поддержка беспроводной зарядки',
+            parameter: 'hasWirelessCharge',
+            unit: null
+        },
+        {
+            title: 'Стоимость',
+            parameter: 'price',
+            unit: '₽'
+        }
+    ]
 })
 
 const getters = {
@@ -49,6 +110,9 @@ const getters = {
     },
     getShowDifference(state: State) {
         return state.showDifference
+    },
+    getFilteredRowsTitles(state: State) {
+        return state.filteredRowsTitles
     },
 }
 
@@ -90,6 +154,27 @@ const mutations = {
         state.allDevices.splice(index, 1, state.allDevices[indexUnusedDevice])
         return state.allDevices.splice(indexUnusedDevice, 1, deviceUnused)
     },
+
+    filteredRowsTitles(state: State){
+        let parametersWithDifference = []
+
+        state.rowsTitles.forEach((row: RowTitle) => {
+            state.devicesForCompare.forEach((device: Device) => {
+                if (device[row.parameter] !== state.devicesForCompare[0][row.parameter] &&
+                    !parametersWithDifference.includes(row.parameter)) {
+                    parametersWithDifference.push(row.parameter)
+                }
+            })
+        })
+
+        return state.filteredRowsTitles = state.rowsTitles.filter((row: RowTitle) => {
+            return parametersWithDifference.includes(row.parameter)
+        })
+    },
+
+    setFilteredRowsTitles(state: State){
+        state.filteredRowsTitles = state.rowsTitles.slice()
+    }
 }
 
 const actions = {

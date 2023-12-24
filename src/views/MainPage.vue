@@ -82,11 +82,6 @@ type Device = {
   price: number,
   imgPath: string,
 }
-type RowTitle = {
-  title: string,
-  parameter: string,
-  unit: string | null
-}
 
 export default {
   components: {
@@ -96,66 +91,12 @@ export default {
   },
   data() {
     return {
-      parametersWithDifference: [] as string[],
       devicesForCompareWithDifference: [] as Device[],
       tabs: [] as Tab [],
       activeTab: {
         title: '3',
         isActive: true
-      } as Tab,
-      rowsTitles: [
-        {
-          title: 'Производитель',
-          parameter: 'brand',
-          unit: null
-        },
-        {
-          title: 'год релиза',
-          parameter: 'releaseYear',
-          unit: null
-        },
-        {
-          title: 'Диагональ экрана (дюйм)',
-          parameter: 'displaySize',
-          unit: null
-        },
-        {
-          title: 'Страна-производитель',
-          parameter: 'manufactureCountry',
-          unit: null
-        },
-        {
-          title: 'Объем памяти',
-          parameter: 'memory',
-          unit: 'Гб'
-        },
-        {
-          title: 'Частота обновления экрана',
-          parameter: 'displayRefreshRate',
-          unit: null
-        },
-        {
-          title: 'NFC',
-          parameter: 'hasNFC',
-          unit: null
-        },
-        {
-          title: 'Поддержка eSIM',
-          parameter: 'hasESIM',
-          unit: null
-        },
-        {
-          title: 'Поддержка беспроводной зарядки',
-          parameter: 'hasWirelessCharge',
-          unit: null
-        },
-        {
-          title: 'Стоимость',
-          parameter: 'price',
-          unit: '₽'
-        }
-      ] as RowTitle[],
-      filteredRowsTitles: [] as RowTitle[],
+      } as Tab
     }
   },
   methods: {
@@ -168,24 +109,6 @@ export default {
     },
     setShowDifference(show: boolean): void {
       this.$store.commit('devices/setShowDifference', show)
-    },
-    showAllDevices() {
-      this.filteredRowsTitles = this.rowsTitles.slice()
-    },
-    showDevicesWithDifference() {
-      this.parametersWithDifference = []
-      this.rowsTitles.forEach((row: RowTitle) => {
-        this.devicesForCompare.forEach((device: Device) => {
-          if (device[row.parameter] !== this.devicesForCompare[0][row.parameter] &&
-              !this.parametersWithDifference.includes(row.parameter)) {
-            this.parametersWithDifference.push(row.parameter)
-          }
-        })
-      })
-
-      this.filteredRowsTitles = this.rowsTitles.filter((row: RowTitle) => {
-        return this.parametersWithDifference.includes(row.parameter)
-      })
     },
     initTab(): void {
       const length = this.$store.getters['devices/getAllDevices'].length
@@ -206,10 +129,13 @@ export default {
     },
     showDifference() {
       return this.$store.getters['devices/getShowDifference']
+    },
+    filteredRowsTitles(){
+      return this.$store.getters['devices/getFilteredRowsTitles']
     }
   },
   async mounted() {
-    this.showAllDevices()
+    this.$store.commit('devices/setFilteredRowsTitles')
     await this.$store.dispatch('devices/getDevices')
     this.initTab()
     await this.getDevicesForCompare()
@@ -220,16 +146,16 @@ export default {
         const count = Number(newVal.title)
         this.$store.commit('devices/setCountDevicesForCompare', count)
         this.getDevicesForCompare()
-        this.setShowDifference(false)
+        this.$store.commit('devices/filteredRowsTitles')
       }
     },
     showDifference: {
       handler(newVal, oldVal) {
         if (newVal) {
-          this.showDevicesWithDifference()
+          this.$store.commit('devices/filteredRowsTitles')
           return
         }
-        this.showAllDevices()
+        this.$store.commit('devices/setFilteredRowsTitles')
       }
     }
   }
