@@ -1,25 +1,26 @@
 .phone-card-container
   @include direction-column
-  align-items: flex-end
+  justify-content: center
   gap: 8px
 
   .icons
     display: flex
     align-items: flex-end
-    justify-content: flex-end
+    justify-content: center
 
     img
       height: 120px
       flex-shrink: 0
 
-
     .stroke
-      padding: 0 0 22px 19.2px
+      padding: 0 0 22px 25px
       position: relative
 
       svg
         cursor: pointer
 
   .model-title
-    padding-right: 10px
+    @include align-items-center
+    justify-content: center
+    width: 100%
     @include default-body-text

@@ -2,11 +2,6 @@
   <div class="phone-card-container">
     <div class="icons">
       <img
-          :class="{
-            '_apple': deviceInfo.brand === 'Apple',
-            '_xiaomi': deviceInfo.brand === 'Xiaomi',
-            '_samsung': deviceInfo.brand === 'Samsung',
-          }"
           :src="'src/public/' + deviceInfo.imgPath"
           alt="icon"
       />
@@ -30,7 +25,9 @@
         />
       </div>
     </div>
-    <p class="_non-space model-title">{{ deviceInfo.model }}</p>
+    <div class="model-title">
+      <p class="_non-space">{{ deviceInfo.model }}</p>
+    </div>
   </div>
 </template>
 
@@ -46,7 +43,7 @@ export default {
     }
   },
   computed: {
-    countDevicesForCompare(){
+    countDevicesForCompare() {
       return this.$store.getters['devices/getCountDevicesForCompare']
     }
   },
@@ -65,5 +62,4 @@ export default {
 </script>
 
 <style scoped>
-
 </style>

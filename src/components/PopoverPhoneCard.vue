@@ -17,11 +17,12 @@
             d="M15.1883 9.35717C14.8333 9.0022 14.2576 9.0022 13.9026 9.35717C13.5476 9.71214 13.5476 10.2878 13.9026 10.6428L16.8962 13.6364H0.90912C0.40706 13.6364 3.02863e-05 14.0434 3.02863e-05 14.5455C3.02863e-05 15.0475 0.40706 15.4546 0.90912 15.4546H16.8962L13.9027 18.4481C13.5476 18.8031 13.5476 19.3787 13.9027 19.7338C14.0801 19.9112 14.3128 20 14.5455 20C14.7781 20 15.0108 19.9112 15.1883 19.7337L19.7337 15.1883C20.0887 14.8333 20.0887 14.2576 19.7337 13.9026L15.1883 9.35717Z"
             fill="#36935B"/>
       </svg>
-      <img
-          class="phone-icon"
-          :src="'src/public/' + device.imgPath"
-          alt="icon"
-      />
+      <div class="phone-icon">
+        <img
+            :src="'src/public/' + device.imgPath"
+            alt="icon"
+        />
+      </div>
     </div>
     <p class="_non-space card-text">{{ device.model }}</p>
   </div>
@@ -29,15 +30,15 @@
 
 <script lang="ts">
 export default {
-  emit:['changeDevices'],
+  emit: ['changeDevices'],
   props: {
     device: {
       type: Object,
       required: true
     },
   },
-  methods:{
-    changeDevices(){
+  methods: {
+    changeDevices() {
       this.$emit('changeDevices', this.device.id)
     }
   }

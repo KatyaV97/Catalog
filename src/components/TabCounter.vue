@@ -6,8 +6,8 @@
           class="tab-count"
       ><span
           :class="{
-                      '_active': tab.isActive
-                    }"
+                     '_active': tab.isActive
+                  }"
           @click="setActive(tab)"
       >{{ tab.title }}</span>
       <span>{{ index !== devicesCounter.length - 1 ? '&nbsp;' : '' }}</span>

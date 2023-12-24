@@ -22,7 +22,7 @@
         <h1 class="_non-space title">Смартфоны</h1>
         <p class="_non-space tabs-devices-counter">Отобразить товары:&nbsp;
           <TabCounter
-              :devices-counter="devicesCounter"
+              :devices-counter="tabs"
               @get-active-tab="getActiveTab"
           />
         </p>
@@ -35,6 +35,7 @@
         />
         <div class="phone-card">
           <div
+              v-if="devicesForCompare.length > 0"
               v-for="device in devicesForCompare"
               :key="device.id"
           >
@@ -50,7 +51,7 @@
     <div class="rows">
       <TableRowsDevices
           :devices-info="devicesForCompare"
-          :rows-with-difference="titleRows3"
+          :rows-with-difference="filteredRowsTitles"
       />
     </div>
   </div>
@@ -66,7 +67,6 @@ type Tab = {
   title: string,
   isActive: boolean
 }
-
 type Device = {
   id: string,
   model: string,
@@ -76,13 +76,13 @@ type Device = {
   manufactureCountry: string,
   memory: number,
   displayRefreshRate: number,
-  haveNFC: boolean,
-  haveESIM: boolean,
-  haveWireless: boolean,
+  hasNFC: boolean,
+  hasESIM: boolean,
+  hasWirelessChargeCharge: boolean,
   price: number,
   imgPath: string,
 }
-type Title = {
+type RowTitle = {
   title: string,
   parameter: string,
   unit: string | null
@@ -97,37 +97,13 @@ export default {
   data() {
     return {
       parametersWithDifference: [] as string[],
-      showDifference: false as boolean,
       devicesForCompareWithDifference: [] as Device[],
-      titlesRows: ['id', 'model', 'brand', 'releaseYear', 'displaySize', 'manufactureCountry', 'memory', 'displayRefreshRate',
-        'haveNFC', 'haveESIM', 'haveWireless', 'price', 'imgPath'] as string[],
-      devicesCounter: [
-        {
-          title: '2',
-          isActive: false
-        },
-        {
-          title: '3',
-          isActive: true
-        },
-        {
-          title: '4',
-          isActive: false
-        },
-        {
-          title: '5',
-          isActive: false
-        },
-        {
-          title: '6',
-          isActive: false
-        }
-      ] as Tab [],
+      tabs: [] as Tab [],
       activeTab: {
         title: '3',
         isActive: true
       } as Tab,
-      titlesRows2: [
+      rowsTitles: [
         {
           title: 'Производитель',
           parameter: 'brand',
@@ -160,17 +136,17 @@ export default {
         },
         {
           title: 'NFC',
-          parameter: 'haveNFC',
+          parameter: 'hasNFC',
           unit: null
         },
         {
           title: 'Поддержка eSIM',
-          parameter: 'haveESIM',
+          parameter: 'hasESIM',
           unit: null
         },
         {
           title: 'Поддержка беспроводной зарядки',
-          parameter: 'haveWireless',
+          parameter: 'hasWirelessCharge',
           unit: null
         },
         {
@@ -178,8 +154,8 @@ export default {
           parameter: 'price',
           unit: '₽'
         }
-      ] as Title[],
-      titleRows3: [] as Title[],
+      ] as RowTitle[],
+      filteredRowsTitles: [] as RowTitle[],
     }
   },
   methods: {
@@ -191,34 +167,34 @@ export default {
       this.$store.commit('devices/setUnusedDevices', this.countDevicesForCompare)
     },
     setShowDifference(show: boolean): void {
-      this.showDifference = show
-      if(show){
-        this.showDevicesWithDifference()
-        return
-      }
-      this.showAllDevices()
+      this.$store.commit('devices/setShowDifference', show)
     },
-    showAllDevices(){
-      this.titleRows3 = this.titlesRows2.slice()
+    showAllDevices() {
+      this.filteredRowsTitles = this.rowsTitles.slice()
     },
     showDevicesWithDifference() {
       this.parametersWithDifference = []
-      this.titlesRows.forEach(parameter => {
-        let haveDifference = false
-
+      this.rowsTitles.forEach((row: RowTitle) => {
         this.devicesForCompare.forEach((device: Device) => {
-          if (device[parameter] !== this.devicesForCompare[0][parameter] &&
-              !this.parametersWithDifference.includes(parameter)) {
-            this.parametersWithDifference.push(parameter)
+          if (device[row.parameter] !== this.devicesForCompare[0][row.parameter] &&
+              !this.parametersWithDifference.includes(row.parameter)) {
+            this.parametersWithDifference.push(row.parameter)
           }
         })
       })
-      console.log(this.parametersWithDifference)
 
-      this.titleRows3 = this.titlesRows2.filter(row => {
+      this.filteredRowsTitles = this.rowsTitles.filter((row: RowTitle) => {
         return this.parametersWithDifference.includes(row.parameter)
       })
-      console.log(this.devicesForCompareWithDifference)
+    },
+    initTab(): void {
+      const length = this.$store.getters['devices/getAllDevices'].length
+      for (let i = 2; i <= length; i++) {
+        this.tabs.push({
+          title: i.toString(),
+          isActive: i === 3
+        })
+      }
     }
   },
   computed: {
@@ -227,15 +203,16 @@ export default {
     },
     countDevicesForCompare() {
       return this.$store.getters['devices/getCountDevicesForCompare']
+    },
+    showDifference() {
+      return this.$store.getters['devices/getShowDifference']
     }
-  },
-  created() {
-    this.parametersWithDifference = this.titlesRows.slice()
   },
   async mounted() {
     this.showAllDevices()
     await this.$store.dispatch('devices/getDevices')
-    this.getDevicesForCompare()
+    this.initTab()
+    await this.getDevicesForCompare()
   },
   watch: {
     activeTab: {
@@ -244,6 +221,15 @@ export default {
         this.$store.commit('devices/setCountDevicesForCompare', count)
         this.getDevicesForCompare()
         this.setShowDifference(false)
+      }
+    },
+    showDifference: {
+      handler(newVal, oldVal) {
+        if (newVal) {
+          this.showDevicesWithDifference()
+          return
+        }
+        this.showAllDevices()
       }
     }
   }

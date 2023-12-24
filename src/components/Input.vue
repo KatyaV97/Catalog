@@ -1,7 +1,5 @@
 <template>
-  <div
-      class="input-body"
-  >
+  <div class="input-body">
     <div class="left">
       <input
           class="main-input"

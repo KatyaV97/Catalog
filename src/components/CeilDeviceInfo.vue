@@ -1,11 +1,9 @@
 <template>
-  <p
-      v-if="typeValue==='string'"
-      class="_non-space ceil-info"
+  <p v-if="typeValue === 'string'"
+     class="_non-space ceil-info"
   >{{ text }}</p>
-  <p
-      v-else-if="typeValue==='boolean'"
-      class="_non-space ceil-info"
+  <p v-else-if="typeValue === 'boolean'"
+     class="_non-space ceil-info"
   >
     <svg
         v-if="text === 'true'"
@@ -32,10 +30,9 @@
             fill="#EF4058"/>
     </svg>
   </p>
-  <p
-    v-else-if="typeValue==='number'"
-    class="_non-space ceil-info"
-  >{{ new Intl.NumberFormat('ru-Ru').format(Number(text)) }}<span v-if="unit !== null">&nbsp;{{unit}}</span>
+  <p v-else-if="typeValue==='number'"
+     class="_non-space ceil-info"
+  >{{ new Intl.NumberFormat('ru-Ru').format(Number(text)) }}<span v-if="unit !== null">&nbsp;{{ unit }}</span>
   </p>
 </template>
 

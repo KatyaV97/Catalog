@@ -5,12 +5,18 @@
 
   .icons
     @include align-items-center
+    justify-content: flex-start
     gap: 18px
     height: 50px
+    width: 88px
 
-    img
-      width: 23.9px
-      height: 50px
+    .phone-icon
+      width: 100%
+      @include align-items-center
+      justify-content: center
+
+      img
+        height: 50px
 
   .card-text
     @include default-regular-text

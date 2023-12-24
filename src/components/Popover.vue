@@ -6,6 +6,7 @@
     <perfect-scrollbar>
       <div class="scroll-block">
         <Input
+            v-if="countDevicesForCompare < 3"
             :value="searchValue"
             @input="setSearchValue"
         />
@@ -41,9 +42,9 @@ type Device = {
   manufactureCountry: string,
   memory: number,
   displayRefreshRate: number,
-  haveNFC: boolean,
-  haveESIM: boolean,
-  haveWireless: boolean,
+  hasNFC: boolean,
+  hasESIM: boolean,
+  hasWirelessChargeCharge: boolean,
   price: number,
   imgPath: string,
 }
@@ -68,14 +69,13 @@ export default defineComponent({
       this.$emit('togglePopover', false)
     },
     changeDevices(newId: string): void {
-      this.$store.commit('devices/changeDevicesForCompare', {
+      this.$store.commit('devices/changeDevices', {
         newId: newId,
         oldId: this.deviseId
       })
-      this.$store.commit('devices/changeUnusedDevices', {
-        newId: newId,
-        oldId: this.deviseId
-      })
+      this.$store.commit('devices/setDevicesForCompare')
+      this.$store.commit('devices/setUnusedDevices')
+      this.$store.commit('devices/setShowDifference', false)
     },
     setSearchValue(text: string): void {
       this.searchValue = text.trim()
@@ -85,7 +85,6 @@ export default defineComponent({
       this.filteredDevices = this.unusedDevices.filter((device: Device) => {
         return device.model.toLowerCase().includes(this.searchValue.toLowerCase())
       })
-      console.log(this.filteredDevices)
     }
   },
   computed: {
