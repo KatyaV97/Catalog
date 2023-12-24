@@ -1,4 +1,5 @@
 //import axios from "axios"
+import type {ActionContext} from "vuex";
 
 type Device = {
     id: string,
@@ -18,41 +19,79 @@ type Device = {
 
 export interface State {
     allDevices: Device [],
-    devicesForCompare: Device []
+    devicesForCompare: Device [],
+    unusedDevices: Device [],
+    countDevicesForCompare: number
 }
 
 const state = (): State => ({
     allDevices: [],
-    devicesForCompare: []
+    devicesForCompare: [],
+    unusedDevices: [],
+    countDevicesForCompare: 3
 })
 
 const getters = {
-    getAllDevices(state) {
+
+    getCountDevicesForCompare(state: State) {
+        return state.countDevicesForCompare
+    },
+    getAllDevices(state: State) {
         return state.allDevices
     },
-    getDevicesForCompare(state) {
+    getDevicesForCompare(state: State) {
         console.log(2)
         return state.devicesForCompare
+    },
+    getUnusedDevices(state: State) {
+        console.log(state.unusedDevices)
+        return state.unusedDevices
     },
 }
 
 const mutations = {
-    setAllDevices(state, payload) {
+    setAllDevices(state: State, payload: Device[]) {
         return state.allDevices = payload
     },
 
-    setDevicesForCompare(state, payload) {
-        console.log(payload)
-        return state.devicesForCompare = state.allDevices.slice(0, payload)
+    setCountDevicesForCompare(state: State, payload: number) {
+        return state.countDevicesForCompare = payload
     },
 
-    changeDevicesForCompare(state, payload) {
+    setDevicesForCompare(state: State) {
+        return state.devicesForCompare = state.allDevices.slice(0, state.countDevicesForCompare)
+    },
 
+    setUnusedDevices(state: State) {
+        return state.unusedDevices = state.allDevices.slice(state.countDevicesForCompare)
+    },
+
+    changeDevicesForCompare(state: State, payload: { newId: string, oldId: string }) {
+        const index= state.devicesForCompare.findIndex(device => {
+            return device.id === payload.oldId
+        })
+        const indexUnusedDevice= state.unusedDevices.findIndex(device => {
+            return device.id === payload.newId
+        })
+
+        return state.devicesForCompare.splice(index, 1, state.unusedDevices[indexUnusedDevice])
+    },
+
+    changeUnusedDevices(state: State, payload: { newId: string, oldId: string }) {
+        const indexUnusedDevice = state.unusedDevices.findIndex(device => {
+            return device.id === payload.newId
+        })
+
+        const indexInAllDevices = state.allDevices.findIndex(device => {
+            return device.id === payload.oldId
+        })
+
+        return state.unusedDevices.splice(indexUnusedDevice, 1, state.allDevices[indexInAllDevices])
     }
 }
 
 const actions = {
-    async getDevices(context) {
+    async getDevices(context: ActionContext) {
         try {
             console.log(123)
             //const response = await axios.post(${PROMOCODES}, payload)
@@ -75,7 +114,7 @@ const actions = {
                 {
                     id: '45jwe',
                     model: 'Xiaomi Mi 11 Lite',
-                    brand: 'Xiaomi',
+                    brand: 'Apple',
                     releaseYear: 2021,
                     displaySize: 6.55,
                     manufactureCountry: 'China',
@@ -114,8 +153,8 @@ const actions = {
                     haveNFC: true,
                     haveESIM: true,
                     haveWireless: true,
-                    price: 709999,
-                    imgPath: 'SamsungS21.png',
+                    price: 79999,
+                    imgPath: 'SamsungS21.jpg',
                 },
                 {
                     id: '41dgh',
@@ -130,7 +169,7 @@ const actions = {
                     haveESIM: true,
                     haveWireless: true,
                     price: 81499,
-                    imgPath: 'AppleXr.png',
+                    imgPath: 'AppleXr.jpg',
                 },
                 {
                     id: 'ret67',
@@ -145,19 +184,15 @@ const actions = {
                     haveESIM: false,
                     haveWireless: false,
                     price: 18999,
-                    imgPath: 'Readmi8Pro.png',
+                    imgPath: 'Readmi8Pro.jpeg',
                 }
             ]
             context.commit('setAllDevices', response)
+            context.commit('setUnusedDevices')
         } catch (e) {
             console.log(e)
         }
     },
-
-    async getDevicesForCompare(context, payload){
-        console.log(22)
-        context.commit('setDevicesForCompare', payload)
-    }
 }
 
 export default {

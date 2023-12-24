@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="row-line"></div>
-    <div v-for="title in titlesRows"
+    <div v-for="title in rowsWithDifference"
          :key="title.title"
     >
       <Row
@@ -26,6 +26,10 @@ export default {
   components: {Row},
   props: {
     devicesInfo: {
+      type: Array,
+      required: true
+    },
+    rowsWithDifference: {
       type: Array,
       required: true
     }
@@ -85,7 +89,23 @@ export default {
         }
       ] as Title[]
     }
-  }
+  },/*
+  mounted() {
+    console.log(this.rowsWithDifference)
+    this.titlesRows = this.titlesRows.filter(row => {
+      return this.rowsWithDifference.includes(row.parameter)
+    })
+  },
+  watch: {
+    showDifference: {
+      handler(newVal, oldVal) {
+        this.titlesRows = this.titlesRows.filter(row => {
+          return this.rowsWithDifference.includes(row.parameter)
+        })
+        console.log(this.titlesRows)
+      }
+    }
+  }*/
 }
 </script>
 

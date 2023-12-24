@@ -1,5 +1,7 @@
 <template>
-  <div class="row">
+  <div
+      class="row"
+  >
     <p class="_non-space row-title">{{ title.title }}</p>
     <div class="device-info-row">
       <div

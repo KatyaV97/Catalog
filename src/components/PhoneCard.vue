@@ -12,6 +12,7 @@
       />
       <div class="stroke">
         <svg
+            v-if="countDevicesForCompare !== 6"
             @click="togglePopover(true)"
             xmlns="http://www.w3.org/2000/svg"
             width="30"
@@ -24,6 +25,7 @@
         </svg>
         <Popover
             v-if="showPopover"
+            :devise-id="deviceInfo.id"
             @toggle-popover="togglePopover"
         />
       </div>
@@ -41,6 +43,11 @@ export default {
     deviceInfo: {
       type: Object,
       required: true
+    }
+  },
+  computed: {
+    countDevicesForCompare(){
+      return this.$store.getters['devices/getCountDevicesForCompare']
     }
   },
   data() {
