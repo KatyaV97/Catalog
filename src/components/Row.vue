@@ -1,9 +1,13 @@
 <template>
   <div class="row">
     <p class="_non-space row-title">{{ title.title }}</p>
-    <div class="device-info-row">
+    <div class="device-info-row"
+         :class="{
+                    'max-content': devicesForCompare.length > 4
+                  }"
+    >
       <div
-          v-for="device in devicesInfo"
+          v-for="device in devicesForCompare"
           :key="device.id"
       >
         <CeilDeviceInfo
@@ -26,9 +30,10 @@ export default {
       type: Object,
       required: true
     },
-    devicesInfo: {
-      type: Array,
-      required: true
+  },
+  computed: {
+    devicesForCompare() {
+      return this.$store.getters['devices/getDevicesForCompare']
     }
   }
 }

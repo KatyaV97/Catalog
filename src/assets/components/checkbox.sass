@@ -18,3 +18,28 @@
     background: $white-neutral
     border: 2px solid #C1C1C2
     border-radius: 3px
+
+
+@media screen and (max-width: 991.98px)
+
+  .container-checkbox
+    align-items: center
+    @include default-tablet-text
+    min-width: 155px
+
+    .custom-checkbox
+      width: 14px
+      height: 14px
+
+
+@media screen and (max-width: 767.98px)
+
+  .container-checkbox
+    gap: 8px
+    @include default-mobile-text
+    min-width: 100px
+    width: 100px
+
+    .custom-checkbox
+      width: 10px
+      height: 10px

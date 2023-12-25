@@ -38,3 +38,8 @@ npm run dev
 ```sh
 npm run build
 ```
+
+## Server run
+```sh
+node ./backend/server.js
+```

@@ -21,6 +21,39 @@
 
   .model-title
     @include align-items-center
-    justify-content: center
+    text-align: center
     width: 100%
     @include default-body-text
+
+
+@media screen and (max-width: 991.98px)
+
+  .phone-card-container
+    .icons
+      img
+        height: 80px
+
+      .stroke
+        padding: 0 0 10px 10px
+
+    .model-title
+      @include default-tablet-text
+
+@media screen and (max-width: 767.98px)
+
+  .phone-card-container
+    width: 80px
+
+    .icons
+      img
+        height: 60px
+
+      .stroke
+        padding: 0 0 5px 5px
+
+        svg
+          width: 20px
+          height: 15px
+
+    .model-title
+      @include default-mobile-text

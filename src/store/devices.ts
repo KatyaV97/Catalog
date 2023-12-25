@@ -1,13 +1,6 @@
 import axios from "axios"
-import type {Device} from "@/constants/device"
-import {GetterTree} from 'vuex'
-import {MutationTree} from 'vuex'
-
-type RowTitle = {
-    title: string,
-    parameter: string,
-    unit: string | null
-}
+import type {Device, RowTitle} from "@/constants/componentsTypes"
+import type {GetterTree, MutationTree} from 'vuex'
 
 enum MutationTypes {
     setAllDevices = 'setAllDevices',
@@ -116,67 +109,66 @@ const state = (): State => ({
 })
 
 const getters: GetterTree<State, State> & Getters = {
-    getCountDevicesForCompare: (state) => {
+    getCountDevicesForCompare: (state: State) => {
         return state.countDevicesForCompare
     },
-    getAllDevices: (state) => {
+    getAllDevices: (state: State) => {
         return state.allDevices
     },
-    getDevicesForCompare: (state) => {
+    getDevicesForCompare: (state: State) => {
         return state.devicesForCompare
     },
-    getUnusedDevices: (state) => {
+    getUnusedDevices: (state: State) => {
         return state.unusedDevices
     },
-    getShowDifference: (state) => {
+    getShowDifference: (state: State) => {
         return state.showDifference
     },
-    getFilteredRowsTitles: (state) => {
+    getFilteredRowsTitles: (state: State) => {
         return state.filteredRowsTitles
     },
 }
 
 const mutations: MutationTree<State> & Mutations = {
     [MutationTypes.setAllDevices](state: State, payload: Device[]) {
-        state.allDevices = payload
+        return state.allDevices = payload
     },
 
     [MutationTypes.setCountDevicesForCompare](state: State, payload: number) {
-        state.countDevicesForCompare = payload
+        return state.countDevicesForCompare = payload
     },
 
     [MutationTypes.setDevicesForCompare](state: State) {
-        state.devicesForCompare = state.allDevices.slice(0, state.countDevicesForCompare)
+        return state.devicesForCompare = state.allDevices.slice(0, state.countDevicesForCompare)
     },
 
     [MutationTypes.setUnusedDevices](state: State) {
         if (state.allDevices.length > 0) {
-            state.unusedDevices = state.allDevices.slice(state.countDevicesForCompare)
-            return
+            return state.unusedDevices = state.allDevices.slice(state.countDevicesForCompare)
         }
-        state.unusedDevices = []
+        return state.unusedDevices = []
     },
 
     [MutationTypes.setShowDifference](state: State, payload: boolean) {
-        state.showDifference = payload
+        return state.showDifference = payload
     },
 
     [MutationTypes.changeDevices](state: State, payload: { newId: string, oldId: string }) {
         const index = state.allDevices.findIndex((device: Device) => {
-            device.id === payload.oldId
+            return device.id === payload.oldId
         })
         const indexUnusedDevice = state.allDevices.findIndex((device: Device) => {
-            device.id === payload.newId
+            return device.id === payload.newId
         })
 
         const deviceUnused = state.allDevices[index]
 
         state.allDevices.splice(index, 1, state.allDevices[indexUnusedDevice])
-        state.allDevices.splice(indexUnusedDevice, 1, deviceUnused)
+        return state.allDevices.splice(indexUnusedDevice, 1, deviceUnused)
     },
 
     [MutationTypes.filteredRowsTitles](state: State) {
-        let parametersWithDifference = []
+        let parametersWithDifference: string = []
 
         state.rowsTitles.forEach((row: RowTitle) => {
             state.devicesForCompare.forEach((device: Device) => {
@@ -187,13 +179,13 @@ const mutations: MutationTree<State> & Mutations = {
             })
         })
 
-        state.filteredRowsTitles = state.rowsTitles.filter((row: RowTitle) => {
+        return state.filteredRowsTitles = state.rowsTitles.filter((row: RowTitle) => {
             return parametersWithDifference.includes(row.parameter)
         })
     },
 
     [MutationTypes.setFilteredRowsTitles](state: State) {
-        state.filteredRowsTitles = state.rowsTitles.slice()
+        return state.filteredRowsTitles = state.rowsTitles.slice()
     }
 }
 

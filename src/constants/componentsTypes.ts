@@ -13,3 +13,9 @@ export interface Device {
     price: number,
     imgPath: string,
 }
+
+export interface RowTitle {
+    title: string,
+    parameter: string,
+    unit: string | null
+}

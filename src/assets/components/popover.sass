@@ -1,23 +1,39 @@
 .popover-container
   @include direction-column
+  align-items: flex-start
   position: absolute
+  padding: 20px 12px 0 0
   top: 0
   left: -340px
-  padding: 20px 0 24px 18px
   width: 421px
   height: 336px
   flex-shrink: 0
   border-radius: 4px
   border: 1px solid #E3E3E3
   background: #FFF
+  z-index: 10
 
   .scroll-block
+    padding: 14px 18px 24px 18px
     width: max-content
     box-sizing: border-box
 
   .ps
-    height: 297px
+    height: 316px
 
   .popover-cards
     @include direction-column
     gap: 32px
+
+
+@media screen and (max-width: 767.98px)
+
+  .popover-container
+    position: fixed
+    top: 220px
+    left: 16px
+    width: calc(100vw - 48px)
+    margin: auto
+
+    .scroll-block
+      width: calc(100vw - 48px)

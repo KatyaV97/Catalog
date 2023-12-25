@@ -1,30 +1,35 @@
-.header
+.header-container
   @include align-items-center
-  justify-content: space-between
-  height: 101px
-  padding: 0 166px
+  justify-content: center
 
-  .right
-    color: $blue
-    @include default-header-text
-    letter-spacing: 0.9px
-
-  .left
+  .header
     @include align-items-center
-    gap: 48px
-    @include small-header-text
+    justify-content: space-between
+    height: 101px
+    width: 1110px
 
-    .personal-account
+    .right
+      color: $blue
+      @include default-header-text
+      letter-spacing: 0.9px
+
+    .left
       @include align-items-center
-      gap: 19px
-      letter-spacing: 0.24px
+      gap: 48px
+      @include small-header-text
+
+      .personal-account
+        @include align-items-center
+        gap: 19px
+        letter-spacing: 0.24px
 
 .line
   height: 1px
   background: $grey
 
 .container
-  padding: 0 166px
+  @include align-items-center
+  justify-content: center
 
   .table-header
     @include direction-column
@@ -32,6 +37,7 @@
     align-content: center
     padding: 63px 0 74px 0
     height: 232px
+    width: 1110px
 
     .devices-block
       @include space-between
@@ -42,7 +48,6 @@
         display: flex
         justify-content: space-around
         width: 100%
-        padding-right: 65px
 
     .top
       @include space-between
@@ -59,8 +64,69 @@
         line-height: 60px
 
 .table-body
+  @include align-items-center
+  justify-content: center
   background: $light-blue
   padding-bottom: 91px
 
   .rows
-    padding: 0 165px
+    width: 1110px
+
+
+@media screen and (max-width: 1199.98px)
+
+  .header-container
+    padding: 0 30px 0 30px
+
+    .header
+      width: 100%
+
+  .container
+    padding: 0 30px 0 30px
+
+    .table-header
+      width: 100%
+
+  .table-body
+    padding: 0 30px 0 30px
+
+    .rows
+      width: 100%
+
+
+@media screen and (max-width: 991.98px)
+
+  .container
+    .table-header
+      padding: 40px 0 45px 0
+
+      .devices-block
+        gap: 15px
+
+      .top
+        .title
+          @include mobile-h1
+
+        .tabs-devices-counter
+          @include default-tablet-text
+
+
+@media screen and (max-width: 767.98px)
+
+  .container
+    .table-header
+      padding: 0
+
+      .devices-block
+        overflow-x: auto
+        gap: 10px
+
+      .top
+        .title
+          @include mobile-h1
+
+        .tabs-devices-counter
+          @include default-mobile-text
+
+  .table-body
+    overflow-x: auto

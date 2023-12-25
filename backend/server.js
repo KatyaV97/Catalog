@@ -81,7 +81,7 @@ app.get("/api/", function (req, res) {
             id: '41dgh',
             model: 'Apple iPhone Xr',
             brand: 'Apple',
-            releaseYear: 2018,
+            releaseYear: '2018',
             displaySize: 6.1,
             manufactureCountry: 'Китай',
             memory: 128,

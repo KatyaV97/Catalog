@@ -50,4 +50,10 @@ input[type="checkbox"]:checked + .custom-checkbox {
   background: url("../public/tick.svg") no-repeat center center #0D5CF0;
   background-size: 15px;
 }
+
+@media screen and (max-width: 767.98px){
+  input[type="checkbox"]:checked + .custom-checkbox {
+    background-size: 8px;
+  }
+}
 </style>

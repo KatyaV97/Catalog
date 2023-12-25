@@ -1,6 +1,8 @@
 <template>
   <div
       class="popover-container"
+      @mouseenter="onFocus"
+      @mouseleave="onBlur"
       v-click-outside="closePopover"
   >
     <perfect-scrollbar>
@@ -65,17 +67,36 @@ export default defineComponent({
     }
   },
   methods: {
+    onFocus() {
+      this.stopScroll()
+    },
+    event(e: Event) {
+      e.preventDefault();
+    },
+    stopScroll() {
+      document.querySelector('.popover-container').addEventListener('wheel', this.event, {passive: false})
+    },
+    removeStoped() {
+      document.querySelector('.popover-container').removeEventListener('wheel', this.event)
+    },
+    onBlur() {
+      this.removeStoped()
+    },
     closePopover() {
       this.$emit('togglePopover', false)
     },
     changeDevices(newId: string): void {
+      console.log(this.$store.commit)
       this.$store.commit('devices/changeDevices', {
         newId: newId,
         oldId: this.deviseId
       })
       this.$store.commit('devices/setDevicesForCompare')
       this.$store.commit('devices/setUnusedDevices')
-      this.$store.commit('devices/filteredRowsTitles')
+
+      if (this.showDifference) {
+        this.$store.commit('devices/filteredRowsTitles')
+      }
     },
     setSearchValue(text: string): void {
       this.searchValue = text.trim()
@@ -93,9 +114,12 @@ export default defineComponent({
     },
     countDevicesForCompare() {
       return this.$store.getters['devices/getCountDevicesForCompare']
-    }
+    },
+    showDifference() {
+      return this.$store.getters['devices/getShowDifference']
+    },
   },
-  mounted(){
+  mounted() {
     this.unusedDevices.forEach((device: Device) => {
       this.filteredDevices.push(device)
     })

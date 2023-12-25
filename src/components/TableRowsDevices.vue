@@ -6,7 +6,6 @@
         :key="title.title"
     >
       <Row
-          :devices-info="devicesInfo"
           :title="title"
       />
       <div class="row-line"></div>
@@ -21,10 +20,6 @@ import Row from "@/components/Row.vue";
 export default {
   components: {Row},
   props: {
-    devicesInfo: {
-      type: Array,
-      required: true
-    },
     rowsWithDifference: {
       type: Array,
       required: true
