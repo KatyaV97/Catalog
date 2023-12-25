@@ -3,7 +3,6 @@
     <div class="left">
       <input
           class="main-input"
-          ref="input"
           type="text"
           placeholder="Поиск"
           :value="value"

@@ -87,7 +87,8 @@ export default {
   components: {
     TabCounter,
     TableRowsDevices,
-    Checkbox, PhoneCard
+    Checkbox,
+    PhoneCard
   },
   data() {
     return {
@@ -130,7 +131,7 @@ export default {
     showDifference() {
       return this.$store.getters['devices/getShowDifference']
     },
-    filteredRowsTitles(){
+    filteredRowsTitles() {
       return this.$store.getters['devices/getFilteredRowsTitles']
     }
   },
@@ -146,7 +147,9 @@ export default {
         const count = Number(newVal.title)
         this.$store.commit('devices/setCountDevicesForCompare', count)
         this.getDevicesForCompare()
-        this.$store.commit('devices/filteredRowsTitles')
+        if (this.showDifference) {
+          this.$store.commit('devices/filteredRowsTitles')
+        }
       }
     },
     showDifference: {

@@ -7,7 +7,8 @@ const router = createRouter({
     {
       path: '/',
       name: 'mainPage',
-      component: MainPage
+      component: MainPage,
+      meta: {title: 'Каталог'},
     },
   ]
 })

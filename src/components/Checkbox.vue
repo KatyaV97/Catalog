@@ -4,8 +4,8 @@
       class="container-checkbox"
       :for="'checkbox' + id">
     <input
-        type="checkbox"
         :id="'checkbox' + id"
+        type="checkbox"
         :checked="checked"
         @change="$emit('update:checked', !checked)"
     /><span class="custom-checkbox"></span>

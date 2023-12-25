@@ -1,26 +1,47 @@
 import axios from "axios"
-import type {ActionContext} from "vuex";
-
-type Device = {
-    id: string,
-    model: string,
-    brand: string,
-    releaseYear: string,
-    displaySize: number,
-    manufactureCountry: string,
-    memory: number,
-    displayRefreshRate: number,
-    hasNFC: boolean,
-    hasESIM: boolean,
-    hasWirelessCharge: boolean,
-    price: number,
-    imgPath: string,
-}
+import type {Device} from "@/constants/device"
+import {GetterTree} from 'vuex'
+import {MutationTree} from 'vuex'
 
 type RowTitle = {
     title: string,
     parameter: string,
     unit: string | null
+}
+
+enum MutationTypes {
+    setAllDevices = 'setAllDevices',
+    setCountDevicesForCompare = 'setCountDevicesForCompare',
+    setDevicesForCompare = 'setDevicesForCompare',
+    setUnusedDevices = 'setUnusedDevices',
+    setShowDifference = 'setShowDifference',
+    changeDevices = 'changeDevices',
+    filteredRowsTitles = 'filteredRowsTitles',
+    setFilteredRowsTitles = 'setFilteredRowsTitles',
+}
+
+type Mutations<S = State> = {
+    [MutationTypes.setAllDevices](state: S, payload: Device[]): void
+    [MutationTypes.setCountDevicesForCompare](state: S, payload: number): void
+    [MutationTypes.setDevicesForCompare](state: S): void
+    [MutationTypes.setUnusedDevices](state: S): void
+    [MutationTypes.setShowDifference](state: S, payload: boolean): void
+    [MutationTypes.changeDevices](state: S, payload: { newId: string, oldId: string }): void
+    [MutationTypes.filteredRowsTitles](state: S): void
+    [MutationTypes.setFilteredRowsTitles](state: S): void
+}
+
+enum ActionTypes {
+    getDevices = 'getDevices',
+}
+
+type Getters = {
+    getCountDevicesForCompare(state: State): number
+    getAllDevices(state: State): Device[]
+    getDevicesForCompare(state: State): Device[]
+    getUnusedDevices(state: State): Device[]
+    getShowDifference(state: State): boolean
+    getFilteredRowsTitles(state: State): RowTitle[]
 }
 
 export interface State {
@@ -94,68 +115,67 @@ const state = (): State => ({
     ]
 })
 
-const getters = {
-
-    getCountDevicesForCompare(state: State) {
+const getters: GetterTree<State, State> & Getters = {
+    getCountDevicesForCompare: (state) => {
         return state.countDevicesForCompare
     },
-    getAllDevices(state: State) {
+    getAllDevices: (state) => {
         return state.allDevices
     },
-    getDevicesForCompare(state: State) {
+    getDevicesForCompare: (state) => {
         return state.devicesForCompare
     },
-    getUnusedDevices(state: State) {
+    getUnusedDevices: (state) => {
         return state.unusedDevices
     },
-    getShowDifference(state: State) {
+    getShowDifference: (state) => {
         return state.showDifference
     },
-    getFilteredRowsTitles(state: State) {
+    getFilteredRowsTitles: (state) => {
         return state.filteredRowsTitles
     },
 }
 
-const mutations = {
-
-    setAllDevices(state: State, payload: Device[]) {
-        return state.allDevices = payload
+const mutations: MutationTree<State> & Mutations = {
+    [MutationTypes.setAllDevices](state: State, payload: Device[]) {
+        state.allDevices = payload
     },
 
-    setCountDevicesForCompare(state: State, payload: number) {
-        return state.countDevicesForCompare = payload
+    [MutationTypes.setCountDevicesForCompare](state: State, payload: number) {
+        state.countDevicesForCompare = payload
     },
 
-    setDevicesForCompare(state: State) {
-        return state.devicesForCompare = state.allDevices.slice(0, state.countDevicesForCompare)
+    [MutationTypes.setDevicesForCompare](state: State) {
+        state.devicesForCompare = state.allDevices.slice(0, state.countDevicesForCompare)
     },
 
-    setUnusedDevices(state: State) {
+    [MutationTypes.setUnusedDevices](state: State) {
         if (state.allDevices.length > 0) {
-            return state.unusedDevices = state.allDevices.slice(state.countDevicesForCompare)
+            state.unusedDevices = state.allDevices.slice(state.countDevicesForCompare)
+            return
         }
-        return []
+        state.unusedDevices = []
     },
 
-    setShowDifference(state: State, payload: boolean) {
-        return state.showDifference = payload
+    [MutationTypes.setShowDifference](state: State, payload: boolean) {
+        state.showDifference = payload
     },
 
-    changeDevices(state: State, payload: { newId: string, oldId: string }){
-        const index = state.allDevices.findIndex(device => {
-            return device.id === payload.oldId
+    [MutationTypes.changeDevices](state: State, payload: { newId: string, oldId: string }) {
+        const index = state.allDevices.findIndex((device: Device) => {
+            device.id === payload.oldId
         })
-        const indexUnusedDevice = state.allDevices.findIndex(device => {
-            return device.id === payload.newId
+        const indexUnusedDevice = state.allDevices.findIndex((device: Device) => {
+            device.id === payload.newId
         })
 
         const deviceUnused = state.allDevices[index]
 
         state.allDevices.splice(index, 1, state.allDevices[indexUnusedDevice])
-        return state.allDevices.splice(indexUnusedDevice, 1, deviceUnused)
+        state.allDevices.splice(indexUnusedDevice, 1, deviceUnused)
     },
 
-    filteredRowsTitles(state: State){
+    [MutationTypes.filteredRowsTitles](state: State) {
         let parametersWithDifference = []
 
         state.rowsTitles.forEach((row: RowTitle) => {
@@ -167,26 +187,26 @@ const mutations = {
             })
         })
 
-        return state.filteredRowsTitles = state.rowsTitles.filter((row: RowTitle) => {
+        state.filteredRowsTitles = state.rowsTitles.filter((row: RowTitle) => {
             return parametersWithDifference.includes(row.parameter)
         })
     },
 
-    setFilteredRowsTitles(state: State){
+    [MutationTypes.setFilteredRowsTitles](state: State) {
         state.filteredRowsTitles = state.rowsTitles.slice()
     }
 }
 
 const actions = {
-    async getDevices(context: ActionContext) {
+    async [ActionTypes.getDevices]({commit}) {
         try {
             const response = await axios.get('http://localhost:8999/api/')
-            context.commit('setAllDevices', response.data)
-            context.commit('setUnusedDevices')
+            commit('setAllDevices', response.data)
+            commit('setUnusedDevices')
         } catch (e) {
-            context.commit('setAllDevices', [])
+            commit('setAllDevices', [])
         }
-    },
+    }
 }
 
 export default {
